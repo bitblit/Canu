@@ -4,10 +4,64 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.erigir</groupId>
     <artifactId>canu</artifactId>
-    <name>canu</name>
+    <packaging>jar</packaging>
     <version>LOCAL-SNAPSHOT</version>
+    <name>wrench</name>
     <description>Super simple way to ship messages down the amazon</description>
     <inceptionYear>2016</inceptionYear>
+    <url>https://github.com/bitblit/Canu</url>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/bitblit/canu/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+    </ciManagement>
+
+    <organization>
+        <name>Erigir</name>
+        <url>http://www.erigir.com</url>
+    </organization>
+
+    <scm>
+        <url>https://github.com/bitblit/canu</url>
+        <connection>scm:git:git@github.com:bitblit/canu.git</connection>
+        <developerConnection>scm:git:git@github.com:bitblit/canu.git</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>cweiss</id>
+            <name>Chris Weiss</name>
+            <email>bitblit@gmail.com</email>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache V2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <slf4j.version>1.6.1</slf4j.version>
+        <logback.version>1.0.6</logback.version>
+        <junit.version>4.8.2</junit.version>
+        <aws.version>1.10.76</aws.version>
+        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+        <mytime>${maven.build.timestamp}</mytime>
+        <spring.version>4.1.6.RELEASE</spring.version> <!-- We use the MimeMailHelper from Spring to simplify stuff -->
+    </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -41,7 +95,7 @@
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
+            <artifactId>aws-java-sdk-ses</artifactId>
             <version>${aws.version}</version>
         </dependency>
 
@@ -55,18 +109,6 @@
 
     </dependencies>
 
-    <!-- Specify hard-coded project properties here -->
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <slf4j.version>1.6.1</slf4j.version>
-        <logback.version>1.0.6</logback.version>
-        <junit.version>4.8.2</junit.version>
-        <aws.version>1.10.76</aws.version>
-        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
-        <mytime>${maven.build.timestamp}</mytime>
-        <spring.version>4.1.6.RELEASE</spring.version> <!-- We use the MimeMailHelper from Spring to simplify stuff -->
-
-    </properties>
 
     <build>
 
@@ -109,7 +151,7 @@
                             </manifestEntries>
                         </transformer>
                     </transformers>
-                    <finalName>Canu</finalName>
+                    <finalName>Canu-Full-${project.version}</finalName>
                     <!--<minimizeJar>true</minimizeJar>   -->
                 </configuration>
                 <executions>
@@ -121,32 +163,69 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jarsigner-plugin</artifactId>
-                <version>1.2</version>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.4</version>
+                <configuration>
+                    <passphrase>${GPG_PASSPHRASE}</passphrase>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>sign</id>
-                        <phase>package</phase>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <keystore>src/main/signing/clientKeys</keystore>
-                    <alias>allpoint</alias>
-                    <storepass>allpoint</storepass>
-                    <keypass>allpoint</keypass>
-                    <archive>./target/RedressClient.jar</archive>
-                    <removeExistingSignatures>true</removeExistingSignatures>
-                </configuration>
             </plugin>
-            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
 
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.19</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <distributionManagement>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+
 
 </project>
