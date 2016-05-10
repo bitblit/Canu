@@ -12,6 +12,7 @@ test:
  post:
   - mkdir -p $CIRCLE_TEST_REPORTS/junit/
   - find . -type f -regex ".*/target/.*-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+  - cp target/*.jar $CIRCLE_ARTIFACTS
 
 # Using this means that it'll only deploy to artifactory if a release tag is pushed
 deployment:
