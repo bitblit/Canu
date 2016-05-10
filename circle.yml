@@ -7,11 +7,11 @@ machine:
 dependencies:
  override: 
   - mvn --fail-never dependency:go-offline || true
+  # Filter the pom files to actually have the version number in it
+  - find . -type f -regex ".*/pom\.xml" -exec sed -i.bak s/LOCAL-SNAPSHOT/${CIRCLE_TAG:8}+$BUILD_NUMBER/ {} \;
 
 test:
  post:
-   # Filter the pom files to actually have the version number in it
-  - find . -type f -regex ".*/pom\.xml" -exec sed -i.bak s/LOCAL-SNAPSHOT/${CIRCLE_TAG:8}+$BUILD_NUMBER/ {} \;
   - mkdir -p $CIRCLE_TEST_REPORTS/junit/
   - find . -type f -regex ".*/target/.*-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
   - cp target/*.jar $CIRCLE_ARTIFACTS
