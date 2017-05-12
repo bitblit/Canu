@@ -44,6 +44,9 @@ usage: CanuCLI
  -s,--subject <arg>          Sets the subject line of the email
  -t,--to <arg>               Adds a TO address.  You must set at least one
                              TO address, but can add any number
+ -u,--subject-file <arg>     Sets the subject line of the email to the
+                             contents of the supplied file (given preference over
+                             --subject if both are set)
  -x,--text-body-file <arg>   Path to a file containing the text body of
                              the file.  You must set at least one of
                              html-body or text-body

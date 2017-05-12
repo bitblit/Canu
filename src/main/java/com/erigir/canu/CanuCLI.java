@@ -52,6 +52,9 @@ public class CanuCLI {
         if (line.hasOption("bcc-file")) {
             canu.getBcc().addAll(Canu.readStringsFromFile((File) line.getParsedOptionValue("bcc-file")));
         }
+        if (line.hasOption("subject-file")) {
+            canu.setSubject(safeStringFromFile((File)line.getParsedOptionValue("subject-file")));
+        }
         if (line.hasOption("attachment")) {
             for (String s : line.getOptionValues("attachment")) {
                 canu.getAttachments().add(new File(s));
@@ -79,6 +82,7 @@ public class CanuCLI {
         options.addOption(Option.builder("c").required(false).longOpt("cc-file").type(File.class).desc("Path to a file with addresses, one per line, for the CC field").hasArg(true).build());
         options.addOption(Option.builder("b").required(false).longOpt("bcc-file").type(File.class).desc("Path to a file with addresses, one per line, for the BCC field").hasArg(true).build());
         options.addOption(Option.builder("s").required(false).longOpt("subject").type(String.class).desc("Sets the subject line of the email").hasArg(true).build());
+        options.addOption(Option.builder("u").required(false).longOpt("subject-file").type(File.class).desc("Sets the subject line of the email to the contents of the supplied file(given preference over --subject if both are set)").hasArg(true).build());
         options.addOption(Option.builder("h").required(false).longOpt("html-body-file").type(File.class).desc("Path to a file containing the HTML body of the file.  You must set at least one of html-body or text-body").hasArg(true).build());
         options.addOption(Option.builder("x").required(false).longOpt("text-body-file").type(File.class).desc("Path to a file containing the text body of the file.  You must set at least one of html-body or text-body").hasArg(true).build());
         options.addOption(Option.builder("e").required(false).longOpt("text-body").type(String.class).desc("String containing the text body for the email.  You must set at least one of html-body or text-body").hasArg(true).build());
